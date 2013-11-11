@@ -46,6 +46,35 @@
 
   {{ '//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js' | script_tag }}
 
+  {% if template contains 'product' %}
+  <meta property="og:url" content="{{ shop.url }}{{ product.url }}" />
+  <meta property="og:title" content="{{ product.title }}" />
+  <meta property="og:description" content="{{ product.description | strip_html | truncatewords: 50 }}" />
+  <meta property="og:image" content="http:{{ product.featured_image | product_img_url: 'medium' }}" />
+{% elsif template contains 'collection' %}
+  <meta property="og:url" content="{{ shop.url }}{{ collection.url }}"/>
+  <meta property="og:title" content="{{ collection.title }}" />
+  <meta property="og:description" content="{{ collection.description | strip_html | truncatewords: 50 }}" />
+  
+  {% if collection.image %}
+      <meta property="og:image" content="http:{{ collection.image.src | collection_img_url: 'medium' }}"; />
+  {% else %}
+      <meta property="og:image" content="http:{{ 'share-logo.png' | asset_url }}"; />
+  {% endif %}
+   
+{% elsif template contains 'page' %}
+  <meta property="og:url" content="{{shop.url}}{{ page.url }}"/>
+  <meta property="og:title" content="{{ page.title }}" />
+  <meta property="og:description" content="{{ shop.description }}" />
+  <meta property="og:image" content="http:{{ 'share-logo.png' | asset_url }}" />
+{% else %}
+  <meta property="og:url" content="{{ shop.url }}" />
+  <meta property="og:title" content="{{ shop.name }}" />
+  <meta property="og:description" content="{{ shop.description }}"/>
+  <meta property="og:image" content="http:{{ 'share-logo.png' | asset_url }}" /> 
+{% endif %}
+  
+
 </head>
 
 <body id="{{ page_title | handle }}" class="{% if customer %}customer-logged-in {% endif %}template-{{ template | replace: '.', ' ' | truncatewords: 1, '' | handle }}" >
